@@ -44,7 +44,7 @@ index.html   # Main file (contains HTML, CSS, JS)
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/Dhiraj513/portfolio
 ```
 
 2. Open `index.html` in your browser
