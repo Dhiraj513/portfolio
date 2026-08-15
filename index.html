@@ -640,7 +640,11 @@
   <!-- FOOTER -->
   <footer>
     <div class="footer-logo">DK.</div>
-    <p>&copy; 2026 Dhiraj Kushwaha. Designed with intention.</p>
+    <p>&copy; <span id="year"></span> Dhiraj Kushwaha. All rights reserved.</p>
+
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
     <p>Computer Science &middot; East West Institute of Technology</p>
   </footer>
 
