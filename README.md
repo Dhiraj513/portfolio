@@ -79,7 +79,7 @@ https://formspree.io/f/xrerdjvo
 
 **Dhiraj Kushwaha**
 📍 Kathmandu, Nepal
-💻 Computer Science Student
+💻 Computer Engineer
 
 * 🔗 [LinkedIn](https://www.linkedin.com/in/dhiraj-kushwaha-409274220/)
 * 🐙 [GitHub](https://github.com/Dhiraj513)
