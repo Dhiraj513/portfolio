@@ -63,12 +63,20 @@
       background: linear-gradient(to bottom, rgba(13,12,14,0.95), transparent);
       backdrop-filter: blur(4px);
     }
-    .nav-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
+   .nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none; 
+  cursor: none;          
+  display: inline-block;
+  transition: opacity 0.3s;
+}
+
+.nav-logo:hover {
+  opacity: 0.85;
+}
     .nav-links { display: flex; gap: 36px; list-style: none; }
     .nav-links a {
       color: var(--muted);
@@ -554,7 +562,7 @@
 
   <!-- NAV -->
   <nav>
-    <div class="nav-logo">DK.</div>
+    <a href="#" class="nav-logo" id="logoLink">DK.</a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
@@ -775,6 +783,14 @@
 
     document.querySelectorAll('a, button, .skill-card').forEach(function(el) {
       el.addEventListener('mouseenter', function() {
+      var href = a.getAttribute('href');
+    if (href === '#') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      var t = document.querySelector(href);
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+    }
         cursor.style.width  = '20px'; cursor.style.height = '20px';
         ring.style.width    = '60px'; ring.style.height   = '60px';
       });
