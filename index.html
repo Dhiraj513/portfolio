@@ -397,6 +397,76 @@
   font-weight: bold;
 }
 
+.scroll-top-btn {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 48px;
+      height: 48px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      cursor: none; /* Keeps your custom cursor consistent */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(16px) scale(0.9);
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease, border-color 0.3s;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .scroll-top-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .scroll-top-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    /* SVG Progress Ring */
+    .progress-ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: rotate(-90deg); /* Start progress from top */
+      pointer-events: none;
+    }
+
+    .progress-ring__bar {
+      stroke-dasharray: 125.66; /* 2 * PI * 20 */
+      stroke-dashoffset: 125.66;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.1s linear;
+    }
+
+    /* Arrow Icon */
+    .scroll-top-icon {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      transition: transform 0.3s ease;
+    }
+
+    .scroll-top-btn:hover .scroll-top-icon {
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 900px) {
+      .scroll-top-btn {
+        bottom: 24px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+      }
+    }
+
 @keyframes pop {
   0% { transform: scale(0); }
   80% { transform: scale(1.1); }
@@ -556,6 +626,13 @@
   </style>
 </head>
 <body>
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
+    <svg class="progress-ring" width="46" height="46" viewBox="0 0 46 46">
+      <circle class="progress-ring__bg" stroke="rgba(255,255,255,0.08)" stroke-width="3" fill="transparent" r="20" cx="23" cy="23"/>
+      <circle class="progress-ring__bar" id="progressCircle" stroke="var(--accent)" stroke-width="3" fill="transparent" r="20" cx="23" cy="23"/>
+    </svg>
+    <span class="scroll-top-icon">&#8593;</span>
+  </button>
 
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
@@ -761,7 +838,6 @@
   </footer>
 
   <script>
-    
     // --- Custom cursor ---
     var cursor = document.getElementById('cursor');
     var ring   = document.getElementById('cursorRing');
@@ -783,14 +859,6 @@
 
     document.querySelectorAll('a, button, .skill-card').forEach(function(el) {
       el.addEventListener('mouseenter', function() {
-      var href = a.getAttribute('href');
-    if (href === '#') {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      var t = document.querySelector(href);
-      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
-    }
         cursor.style.width  = '20px'; cursor.style.height = '20px';
         ring.style.width    = '60px'; ring.style.height   = '60px';
       });
@@ -809,65 +877,97 @@
 
     document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
 
-    // --- Smooth scroll ---
+    // --- Smooth scroll (Works for both # and section links like #about) ---
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
       a.addEventListener('click', function(e) {
-        var t = document.querySelector(a.getAttribute('href'));
-        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+        var href = a.getAttribute('href');
+        e.preventDefault();
+        
+        if (href === '#' || href === '') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          var targetEl = document.querySelector(href);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       });
-
-      
-    });
-   const form = document.getElementById("contactForm");
-const btn = form.querySelector(".submit-btn");
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  btn.classList.add("loading");
-
-  const data = {
-    name: form.name.value,
-    email: form.email.value,
-    message: form.message.value
-  };
-
-  try {
-    const res = await fetch("https://formspree.io/f/xrerdjvo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(data)
     });
 
-    if (res.ok) {
-      document.getElementById("successModal").classList.add("active");
-form.reset();
+    // --- Contact Form ---
+    const form = document.getElementById("contactForm");
+    const btn = form.querySelector(".submit-btn");
 
-    } else {
-      alert("❌ Something went wrong.");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      btn.classList.add("loading");
+
+      const data = {
+        name: form.name.value,
+        email: form.email.value,
+        message: form.message.value
+      };
+
+      try {
+        const res = await fetch("https://formspree.io/f/xrerdjvo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          document.getElementById("successModal").classList.add("active");
+          form.reset();
+          setTimeout(() => {
+            closeModal();
+          }, 3500);
+        } else {
+          alert("❌ Something went wrong.");
+        }
+      } catch (err) {
+        alert("⚠️ Network error.");
+      }
+
+      btn.classList.remove("loading");
+    });
+
+    function closeModal() {
+      document.getElementById("successModal").classList.remove("active");
     }
 
-  } catch (err) {
-    alert("⚠️ Network error.");
-  }
+    // --- Scroll to Top & Circular Progress ---
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    const progressCircle = document.getElementById('progressCircle');
+    const radius = progressCircle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
 
-  btn.classList.remove("loading");
-});
+    progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+    progressCircle.style.strokeDashoffset = circumference;
 
-    if (res.ok) {
-  document.getElementById("successModal").classList.add("active");
-  form.reset();
+    function updateScrollProgress() {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      
+      const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+      const offset = circumference - (progress * circumference);
+      progressCircle.style.strokeDashoffset = offset;
 
-  setTimeout(() => {
-    closeModal();
-  }, 3000);
-}
-function closeModal() {
-  document.getElementById("successModal").classList.remove("active");
-}
+      // Show button after scrolling down 200px
+      if (scrollTop > 200) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+    }
+
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
   <div class="success-modal" id="successModal">
   <div class="modal-box">
