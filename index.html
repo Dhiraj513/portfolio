@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dhiraj Kushwaha — Student Portfolio</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("theme");
+        var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.setAttribute("data-theme", saved || (dark ? "dark" : "light"));
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -15,6 +26,38 @@
       --text: #f0ece4;
       --muted: #8a8490;
       --border: rgba(255,255,255,0.07);
+
+      /* extra tokens used to replace hardcoded colors */
+      --text-soft: #b0aab8;
+      --on-accent: #0d0c0e;
+      --accent-hover: #f0d898;
+      --accent-rgb: 232,201,126;
+      --bg-rgb: 13,12,14;
+      --surface-rgb: 22,20,26;
+      --overlay: rgba(0,0,0,0.7);
+      --shadow: rgba(0,0,0,0.5);
+      --ring-track: rgba(255,255,255,0.08);
+      color-scheme: dark;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f2f6ff;
+      --surface: #ffffff;
+      --accent: #2563eb;
+      --text: #0f1b33;
+      --muted: #5b6b88;
+      --border: rgba(37,99,235,0.15);
+
+      --text-soft: #3d4a66;
+      --on-accent: #ffffff;
+      --accent-hover: #1d4ed8;
+      --accent-rgb: 37,99,235;
+      --bg-rgb: 242,246,255;
+      --surface-rgb: 255,255,255;
+      --overlay: rgba(15,27,51,0.5);
+      --shadow: rgba(37,99,235,0.18);
+      --ring-track: rgba(37,99,235,0.15);
+      color-scheme: light;
     }
 
     html { scroll-behavior: smooth; }
@@ -26,6 +69,7 @@
       font-weight: 300;
       overflow-x: hidden;
       cursor: none;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     /* Custom cursor */
@@ -43,7 +87,7 @@
     .cursor-ring {
       position: fixed;
       width: 40px; height: 40px;
-      border: 1px solid rgba(232,201,126,0.4);
+      border: 1px solid rgba(var(--accent-rgb),0.4);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9998;
@@ -60,7 +104,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(to bottom, rgba(13,12,14,0.95), transparent);
+      background: linear-gradient(to bottom, rgba(var(--bg-rgb),0.95), transparent);
       backdrop-filter: blur(4px);
     }
    .nav-logo {
@@ -88,6 +132,20 @@
       cursor: none;
     }
     .nav-links a:hover { color: var(--text); }
+
+    .nav-right { display: flex; align-items: center; gap: 36px; }
+    .theme-toggle {
+      width: 38px; height: 38px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--text);
+      font-size: 1rem; line-height: 1;
+      cursor: none;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .theme-toggle:hover { border-color: var(--accent); transform: rotate(15deg); }
 
     /* HERO */
     .hero {
@@ -139,7 +197,7 @@
     .hero-desc {
       font-size: 0.95rem;
       line-height: 1.8;
-      color: #b0aab8;
+      color: var(--text-soft);
       max-width: 400px;
       margin-bottom: 52px;
       opacity: 0;
@@ -163,8 +221,8 @@
       cursor: none;
       transition: all 0.3s;
     }
-    .btn-primary { background: var(--accent); color: #0d0c0e; font-weight: 500; }
-    .btn-primary:hover { background: #f0d898; transform: translateY(-2px); }
+    .btn-primary { background: var(--accent); color: var(--on-accent); font-weight: 500; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
     .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
     .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -179,7 +237,7 @@
     .hero-photo {
       position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse at 60% 40%, rgba(232,201,126,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 60% 40%, rgba(var(--accent-rgb),0.08) 0%, transparent 60%),
         radial-gradient(ellipse at 80% 70%, rgba(201,107,107,0.06) 0%, transparent 50%),
         var(--surface);
       display: flex; align-items: center; justify-content: center;
@@ -194,14 +252,14 @@
     .photo-box::before {
       content: '';
       position: absolute; inset: 0;
-      background: linear-gradient(145deg, rgba(232,201,126,0.05), rgba(201,107,107,0.05));
+      background: linear-gradient(145deg, rgba(var(--accent-rgb),0.05), rgba(201,107,107,0.05));
     }
     .photo-initials {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
       font-family: 'Playfair Display', serif;
       font-size: 5rem; font-weight: 900;
-      color: rgba(232,201,126,0.2);
+      color: rgba(var(--accent-rgb),0.2);
     }
 
     .photo-img {
@@ -216,7 +274,7 @@
     .photo-label {
       position: absolute; bottom: 0; left: 0; right: 0;
       padding: 16px 20px;
-      background: rgba(13,12,14,0.85);
+      background: rgba(var(--bg-rgb),0.85);
       font-size: 0.72rem; letter-spacing: 0.15em;
       text-transform: uppercase; color: var(--muted);
       border-top: 1px solid var(--border);
@@ -224,7 +282,7 @@
     }
     .stat-card {
       position: absolute;
-      background: rgba(22,20,26,0.92);
+      background: rgba(var(--surface-rgb),0.92);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border);
       padding: 18px 22px;
@@ -260,7 +318,7 @@
 
     /* ABOUT */
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-    .about-text p { font-size: 0.95rem; line-height: 1.9; color: #b0aab8; margin-bottom: 20px; }
+    .about-text p { font-size: 0.95rem; line-height: 1.9; color: var(--text-soft); margin-bottom: 20px; }
     .about-details { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; }
     .detail-item {
       padding: 20px;
@@ -288,10 +346,10 @@
     .skills-section { background: var(--surface); }
     .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 60px; }
     .skill-card { padding: 40px 32px; background: var(--bg); transition: background 0.3s; cursor: none; }
-    .skill-card:hover { background: rgba(232,201,126,0.03); }
+    .skill-card:hover { background: rgba(var(--accent-rgb),0.03); }
     .skill-icon {
       width: 44px; height: 44px;
-      background: rgba(232,201,126,0.1);
+      background: rgba(var(--accent-rgb),0.1);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.3rem; margin-bottom: 20px;
     }
@@ -302,7 +360,7 @@
       font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
       padding: 4px 12px; border: 1px solid var(--border); color: var(--muted); transition: all 0.3s;
     }
-    .skill-card:hover .tag { border-color: rgba(232,201,126,0.3); color: var(--text); }
+    .skill-card:hover .tag { border-color: rgba(var(--accent-rgb),0.3); color: var(--text); }
 
     /* CONTACT */
     .contact-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
@@ -327,12 +385,12 @@
     ::placeholder { color: var(--muted); }
     .submit-btn {
       width: 100%; padding: 16px;
-      background: var(--accent); color: #0d0c0e;
+      background: var(--accent); color: var(--on-accent);
       font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500;
       letter-spacing: 0.12em; text-transform: uppercase;
       border: none; cursor: none; transition: all 0.3s;
     }
-    .submit-btn:hover { background: #f0d898; transform: translateY(-2px); }
+    .submit-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
 
     /* FOOTER */
     footer {
@@ -346,7 +404,7 @@
 .success-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: var(--overlay);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -364,8 +422,8 @@
 
 /* Modal box */
 .modal-box {
-  background: rgba(22,20,26,0.95);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(var(--surface-rgb),0.95);
+  border: 1px solid var(--border);
   padding: 40px 30px;
   border-radius: 16px;
   text-align: center;
@@ -393,7 +451,7 @@
 
 .checkmark span {
   font-size: 2rem;
-  color: #000;
+  color: var(--on-accent);
   font-weight: bold;
 }
 
@@ -415,7 +473,7 @@
       visibility: hidden;
       transform: translateY(16px) scale(0.9);
       transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease, border-color 0.3s;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 25px var(--shadow);
     }
 
     .scroll-top-btn.visible {
@@ -499,7 +557,7 @@
 
 .modal-box button:hover {
   transform: translateY(-2px);
-  background: #f0d898;
+  background: var(--accent-hover);
 }
     
     /* ANIMATIONS */
@@ -533,7 +591,8 @@
       .skill-card,
       .nav-logo,
       .submit-btn,
-      .scroll-top-btn {
+      .scroll-top-btn,
+      .theme-toggle {
         cursor: auto !important;
       }
 
@@ -599,7 +658,7 @@
     aspect-ratio: 4 / 5;
     height: auto;
     border-radius: 12px;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 16px 36px var(--shadow);
   }
 
   .photo-img {
@@ -643,7 +702,7 @@
 <body>
   <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
     <svg class="progress-ring" width="46" height="46" viewBox="0 0 46 46">
-      <circle class="progress-ring__bg" stroke="rgba(255,255,255,0.08)" stroke-width="3" fill="transparent" r="20" cx="23" cy="23"/>
+      <circle class="progress-ring__bg" stroke="var(--ring-track)" stroke-width="3" fill="transparent" r="20" cx="23" cy="23"/>
       <circle class="progress-ring__bar" id="progressCircle" stroke="var(--accent)" stroke-width="3" fill="transparent" r="20" cx="23" cy="23"/>
     </svg>
     <span class="scroll-top-icon">&#8593;</span>
@@ -655,12 +714,15 @@
   <!-- NAV -->
   <nav>
     <a href="#" class="nav-logo" id="logoLink">DK.</a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#education">Education</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to light mode">&#9728;&#65039;</button>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -998,5 +1060,28 @@
 
   </div>
 </div>
+  <script>
+    // --- Theme toggle ---
+    (function () {
+      var root = document.documentElement;
+      var btn = document.getElementById('themeToggle');
+      if (!btn) return;
+
+      function render() {
+        var dark = root.getAttribute('data-theme') === 'dark';
+        btn.innerHTML = dark ? '&#9728;&#65039;' : '&#127769;';
+        btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      }
+
+      btn.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        render();
+      });
+
+      render();
+    })();
+  </script>
 </body>
 </html>
